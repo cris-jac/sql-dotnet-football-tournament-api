@@ -24,6 +24,17 @@ namespace LaboratorioAws.Controllers
             return Ok(players);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Player>> GetPlayer(int id)
+        {
+            var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == id);
+            if (player == null)
+            {
+                return NotFound();
+            }
+            return Ok(player);
+        }
+
         [HttpPost]
         public async Task<ActionResult> AddPlayer(PlayerDto playerDto)
         {
@@ -47,7 +58,51 @@ namespace LaboratorioAws.Controllers
                 DateOfBirth = new DateTime(dateArray[0], dateArray[1], dateArray[2])
             };
 
-            await _context.Players.AddAsync(player);
+            _context.Players.Add(player);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, PlayerDto playerDto)
+        {
+            var existingPlayer = await _context.Players.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingPlayer == null)
+            {
+                return NotFound();
+            }
+
+            var dateStringArray = playerDto.DateOfBirthYyyyMmDd.Split("-");
+            var dateArray = dateStringArray.Select(n => int.Parse(n)).ToArray();
+
+            existingPlayer.Name = playerDto.Name;
+            existingPlayer.Surname = playerDto.Surname;
+            existingPlayer.Position = playerDto.Position;
+            existingPlayer.Number = playerDto.Number;
+            existingPlayer.DocumentType = playerDto.DocumentType;
+            existingPlayer.DocumentNumber = playerDto.DocumentNumber;
+            existingPlayer.Starter = playerDto.Starter;
+            existingPlayer.DateOfBirth = new DateTime(dateArray[0], dateArray[1], dateArray[2]);
+
+            _context.Update(existingPlayer);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var existingPlayer = await _context.Players.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingPlayer == null)
+            {
+                return NotFound();
+            }
+
+            _context.Players.Remove(existingPlayer);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }
