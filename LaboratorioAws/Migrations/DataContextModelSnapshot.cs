@@ -17,7 +17,7 @@ namespace LaboratorioAws.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
 
-            modelBuilder.Entity("LaboratorioAws.Clases.Player", b =>
+            modelBuilder.Entity("LaboratorioAws.Entities.Player", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,35 +62,47 @@ namespace LaboratorioAws.Migrations
                             DateOfBirth = new DateTime(1987, 6, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DocumentNumber = 12345678,
                             DocumentType = "DNI",
-                            Name = "Lionel 1",
+                            Name = "Lionel",
                             Number = 10,
                             Position = "Delantero",
                             Starter = true,
-                            Surname = "Messi 1"
+                            Surname = "Messi"
                         },
                         new
                         {
                             Id = 2,
-                            DateOfBirth = new DateTime(1977, 5, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateOfBirth = new DateTime(1992, 9, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DocumentNumber = 98765432,
                             DocumentType = "DNI",
-                            Name = "Lionel 2",
-                            Number = 10,
+                            Name = "Emiliano",
+                            Number = 23,
                             Position = "Arquero",
                             Starter = false,
-                            Surname = "Messi 2"
+                            Surname = "Martinez"
                         },
                         new
                         {
                             Id = 3,
-                            DateOfBirth = new DateTime(1997, 7, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateOfBirth = new DateTime(2001, 1, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DocumentNumber = 13572468,
                             DocumentType = "DNI",
-                            Name = "Lionel 3",
-                            Number = 11,
+                            Name = "Enzo",
+                            Number = 24,
                             Position = "Mediocampista",
                             Starter = true,
-                            Surname = "Messi 3"
+                            Surname = "Fernandez"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DateOfBirth = new DateTime(1997, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DocumentNumber = 97532468,
+                            DocumentType = "DNI",
+                            Name = "Gonzalo",
+                            Number = 4,
+                            Position = "Defensor",
+                            Starter = true,
+                            Surname = "Montiel"
                         });
                 });
 #pragma warning restore 612, 618

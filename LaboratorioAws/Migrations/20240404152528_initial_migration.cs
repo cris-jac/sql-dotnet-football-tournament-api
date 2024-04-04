@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LaboratorioAws.Migrations
 {
-    public partial class Initial_migration : Migration
+    public partial class initial_migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,17 +32,22 @@ namespace LaboratorioAws.Migrations
             migrationBuilder.InsertData(
                 table: "Players",
                 columns: new[] { "Id", "DateOfBirth", "DocumentNumber", "DocumentType", "Name", "Number", "Position", "Starter", "Surname" },
-                values: new object[] { 1, new DateTime(1987, 6, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), 12345678, "DNI", "Lionel 1", 10, "Delantero", true, "Messi 1" });
+                values: new object[] { 1, new DateTime(1987, 6, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), 12345678, "DNI", "Lionel", 10, "Delantero", true, "Messi" });
 
             migrationBuilder.InsertData(
                 table: "Players",
                 columns: new[] { "Id", "DateOfBirth", "DocumentNumber", "DocumentType", "Name", "Number", "Position", "Starter", "Surname" },
-                values: new object[] { 2, new DateTime(1977, 5, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 98765432, "DNI", "Lionel 2", 10, "Arquero", false, "Messi 2" });
+                values: new object[] { 2, new DateTime(1992, 9, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 98765432, "DNI", "Emiliano", 23, "Arquero", false, "Martinez" });
 
             migrationBuilder.InsertData(
                 table: "Players",
                 columns: new[] { "Id", "DateOfBirth", "DocumentNumber", "DocumentType", "Name", "Number", "Position", "Starter", "Surname" },
-                values: new object[] { 3, new DateTime(1997, 7, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 13572468, "DNI", "Lionel 3", 11, "Mediocampista", true, "Messi 3" });
+                values: new object[] { 3, new DateTime(2001, 1, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), 13572468, "DNI", "Enzo", 24, "Mediocampista", true, "Fernandez" });
+
+            migrationBuilder.InsertData(
+                table: "Players",
+                columns: new[] { "Id", "DateOfBirth", "DocumentNumber", "DocumentType", "Name", "Number", "Position", "Starter", "Surname" },
+                values: new object[] { 4, new DateTime(1997, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 97532468, "DNI", "Gonzalo", 4, "Defensor", true, "Montiel" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
