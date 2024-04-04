@@ -1,4 +1,4 @@
-﻿namespace LaboratorioAws.Clases
+﻿namespace LaboratorioAws.Entities
 {
     public class Tournament
     {

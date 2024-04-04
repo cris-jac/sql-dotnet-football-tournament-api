@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-
-namespace LaboratorioAws.Clases
+﻿namespace LaboratorioAws.Entities
 {
     public class Club
     {
-        [Key]
-        [Required]
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime FoundationDate { get; set; }
