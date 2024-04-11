@@ -1,4 +1,5 @@
-﻿using Repository.interfaces;
+﻿using LaboratorioAws.Data;
+using Repository.interfaces;
 
 namespace Repository
 {
@@ -34,7 +35,7 @@ namespace Repository
         {
             return await _context.Set<T>().FindAsync(id);
         }
-    {
+ 
 
     }
 }

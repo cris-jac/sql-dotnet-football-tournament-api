@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Repository.interfaces
 {
-    internal interface PlayerInterface
+    public interface IUnitOfWork : IDisposable
     {
+        public IPlayerRepository PlayerRepository { get; }
+        Task<int> Save();
     }
 }

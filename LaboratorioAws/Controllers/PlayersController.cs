@@ -1,8 +1,10 @@
-using LaboratorioAws.Entities;
-using LaboratorioAws.Data;
+using Repository;
+//using LaboratorioAws.Data; // esto no iria mas porque es del context
+using Repository.interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LaboratorioAws.DTO;
+using LaboratorioAws.Entities; // esto no deberia ser Model.entities????
 
 namespace LaboratorioAws.Controllers
 {
@@ -10,24 +12,31 @@ namespace LaboratorioAws.Controllers
     [Route("[controller]")]
     public class PlayersController : ControllerBase
     {
-        private readonly DataContext _context;
+        //private readonly DataContext _unitOfWork; //reemplaze todos los _unitOfWork por los _unitOfWork; 
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PlayersController(DataContext context)
+        //public PlayersController(DataContext context)
+        //{
+        //    _unitOfWork = context;
+        //}
+
+        public PlayersController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
-            var players = await _context.Players.ToListAsync();
+            var players = await _unitOfWork.PlayerRepository.GetAll(); // cambie ToListAsync por .GetALL
             return Ok(players);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Player>> GetPlayer(int id)
         {
-            var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == id);
+            var player = await _unitOfWork.PlayerRepository.FirstOrDefaultAsync(x => x.Id == id); //habria que armar metodo para get por id ebn repository
             if (player == null)
             {
                 return NotFound();
@@ -58,8 +67,8 @@ namespace LaboratorioAws.Controllers
                 DateOfBirth = new DateTime(dateArray[0], dateArray[1], dateArray[2])
             };
 
-            _context.Players.Add(player);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Players.Add(player); //cambiar Player por PlayerRepository
+            await _unitOfWork.SaveChangesAsync();
 
             return NoContent();
         }
@@ -67,7 +76,7 @@ namespace LaboratorioAws.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, PlayerDto playerDto)
         {
-            var existingPlayer = await _context.Players.FirstOrDefaultAsync(x => x.Id == id);
+            var existingPlayer = await _unitOfWork.Players.FirstOrDefaultAsync(x => x.Id == id); //cambiar players por PlayerRepository
             if (existingPlayer == null)
             {
                 return NotFound();
@@ -85,8 +94,8 @@ namespace LaboratorioAws.Controllers
             existingPlayer.Starter = playerDto.Starter;
             existingPlayer.DateOfBirth = new DateTime(dateArray[0], dateArray[1], dateArray[2]);
 
-            _context.Update(existingPlayer);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Update(existingPlayer);
+            await _unitOfWork.SaveChangesAsync();
 
             return NoContent();
         }
@@ -94,14 +103,14 @@ namespace LaboratorioAws.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var existingPlayer = await _context.Players.FirstOrDefaultAsync(x => x.Id == id);
+            var existingPlayer = await _unitOfWork.Players.FirstOrDefaultAsync(x => x.Id == id);
             if (existingPlayer == null)
             {
                 return NotFound();
             }
 
-            _context.Players.Remove(existingPlayer);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Players.Remove(existingPlayer);
+            await _unitOfWork.SaveChangesAsync();
 
             return NoContent();
         }
