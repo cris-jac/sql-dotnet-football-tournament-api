@@ -1,4 +1,4 @@
-﻿namespace LaboratorioAws.Entities
+﻿namespace Model.Entities
 {
     public class Stadium
     {

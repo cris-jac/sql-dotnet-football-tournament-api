@@ -1,4 +1,5 @@
-﻿namespace LaboratorioAws.Entities
+﻿//namespace LaboratorioAws.Entities         -> Antiguo namespace
+namespace Model.Entities                 // -> Nuevo namespace
 {
     public class Person
     {

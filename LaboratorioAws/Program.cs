@@ -1,5 +1,8 @@
-using LaboratorioAws.Data;
+//using LaboratorioAws.Data;
 using Microsoft.EntityFrameworkCore;
+using Model.Interfaces;
+using Repository.Data;
+using Repository.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,14 +13,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DataContext>(options =>
+
+// Change: Original Context
+//builder.Services.AddDbContext<DataContext>(options =>
+//{
+//    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+//});
+
+// Change: New Context
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-//     (options =>
-// {
-//     options.UseInMemoryDatabase("MemoryDb");
-// });
+
+
+// Unit Of Work pattern
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 var app = builder.Build();
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LaboratorioAws.Entities
+namespace Model.Entities
 {
     public class Standing
     {

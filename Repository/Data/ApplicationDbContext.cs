@@ -1,12 +1,11 @@
-﻿using LaboratorioAws.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Model.Entities;
 
-namespace LaboratorioAws.Data
+namespace Repository.Data
 {
-    public class DataContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-
-        public DataContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
         }
