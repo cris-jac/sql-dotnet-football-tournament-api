@@ -3,11 +3,12 @@ using Repository.Data;
 
 namespace Repository.Repositories
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IDisposable
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public IPlayerRepository Players { get; private set; }
+        //public IPlayerRepository Players { get; private set; } // quitamos referencia a la interfaz
+        public PlayerRepository Players { get; private set; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {

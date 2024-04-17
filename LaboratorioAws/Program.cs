@@ -14,12 +14,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-// Change: Original Context
-//builder.Services.AddDbContext<DataContext>(options =>
-//{
-//    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-//});
-
 // Change: New Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -28,8 +22,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 
 // Unit Of Work pattern
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+//builder.Services.AddScoped< UnitOfWork>();
+builder.Services.AddScoped< UnitOfWork>();
 
 var app = builder.Build();
 

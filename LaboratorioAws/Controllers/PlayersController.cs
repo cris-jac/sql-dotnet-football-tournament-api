@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using LaboratorioAws.DTO;
 using Model.Entities;
 using Model.Interfaces;            // -> Nuevo namespace
+using Repository.Repositories;  //para prueba
 //using LaboratorioAws.Entities;        // -> Antiguo namespace
 
 
@@ -11,20 +12,20 @@ namespace LaboratorioAws.Controllers
     [Route("[controller]")]
     public class PlayersController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;           // Now imported from the Repository project
-
+        //private readonly IUnitOfWork _unitOfWork;           // Now imported from the Repository project
+        private readonly UnitOfWork _unitOfWork;   //agregamos prueba
         //public PlayersController(DataContext context)
         //{
         //    _dbContext = context;
         //}
 
-        public PlayersController(IUnitOfWork unitOfWork)
+        public PlayersController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
             var players = await _unitOfWork.Players.GetAll();
