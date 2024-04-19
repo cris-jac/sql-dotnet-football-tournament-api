@@ -7,6 +7,6 @@
         public DateTime FoundationDate { get; set; }
         public string Manager { get; set; }
         public List<Player> Players { get; set; }
-        public Standing Standing { get; set; }
+        //public Standing Standing { get; set; } deberian volar?
     }
 }

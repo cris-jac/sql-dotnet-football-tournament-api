@@ -14,6 +14,7 @@ namespace LaboratorioAws.Controllers
     {
         //private readonly IUnitOfWork _unitOfWork;           // Now imported from the Repository project
         private readonly UnitOfWork _unitOfWork;   //agregamos prueba
+
         //public PlayersController(DataContext context)
         //{
         //    _dbContext = context;
@@ -25,7 +26,7 @@ namespace LaboratorioAws.Controllers
         }
 
 
-        [HttpGet("GetAll")]
+        [HttpGet("All")]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
             var players = await _unitOfWork.Players.GetAll();
