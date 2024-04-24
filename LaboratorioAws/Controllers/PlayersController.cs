@@ -2,14 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using LaboratorioAws.DTO;
 using Model.Entities;
 using Model.Interfaces;            // -> Nuevo namespace
-using Repository.Repositories;  //para prueba
+using Repository.Repositories;
+using Microsoft.AspNetCore.Authorization;  //para prueba
 //using LaboratorioAws.Entities;        // -> Antiguo namespace
 
 
 namespace LaboratorioAws.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
     public class PlayersController : ControllerBase
     {
         //private readonly IUnitOfWork _unitOfWork;           // Now imported from the Repository project
@@ -25,14 +27,15 @@ namespace LaboratorioAws.Controllers
             _unitOfWork = unitOfWork;
         }
 
-
-        [HttpGet("All")]
+        [AllowAnonymous]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
             var players = await _unitOfWork.Players.GetAll();
             return Ok(players);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Player>> GetPlayer(int id)
         {
@@ -44,7 +47,8 @@ namespace LaboratorioAws.Controllers
             return Ok(player);
         }
 
-        [HttpGet("number/{number}")]
+        [AllowAnonymous]
+        [HttpGet("{number}/player")]
         public async Task<ActionResult<Player>> GetPlayerByNumber(int number)
         {
             var player = await _unitOfWork.Players.GetPlayerByNumber(number);
@@ -55,6 +59,7 @@ namespace LaboratorioAws.Controllers
             return Ok(player);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> AddPlayer(PlayerDto playerDto)
         {
@@ -72,6 +77,7 @@ namespace LaboratorioAws.Controllers
                 Surname = playerDto.Surname,
                 Position = playerDto.Position,
                 Number = playerDto.Number,
+                ClubId = playerDto.ClubId,
                 DocumentType = playerDto.DocumentType,
                 DocumentNumber = playerDto.DocumentNumber,
                 Starter = playerDto.Starter,
@@ -79,10 +85,11 @@ namespace LaboratorioAws.Controllers
             };
 
             await _unitOfWork.Players.Add(player);
-            //await _unitOfWork.SaveAsync();                // Deprecated: now Add() is async
+            await _unitOfWork.SaveAsync();                
 
             return NoContent();
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, PlayerDto playerDto)

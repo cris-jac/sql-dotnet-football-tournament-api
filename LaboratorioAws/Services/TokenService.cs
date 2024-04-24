@@ -21,8 +21,11 @@ namespace LaboratorioAws.Services
 
             var claims = new List<Claim>
             {
+                //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                //new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Name, user.UserName),
+                //new Claim("Username", user.UserName),
                 new Claim("currentTime", currentTime.ToString())    // For check the validity
             };
 
@@ -31,6 +34,8 @@ namespace LaboratorioAws.Services
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var tokenOptions = new JwtSecurityToken(
+                //issuer: _config["JwtSettings:Issuer"],
+                //audience: _config["JwtSettings:Audience"],
                 issuer: null,
                 audience: null,
                 claims: claims,

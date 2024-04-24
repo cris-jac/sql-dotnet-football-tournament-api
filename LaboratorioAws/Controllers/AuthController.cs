@@ -1,6 +1,7 @@
 ﻿using LaboratorioAws.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Security;
 using Security.Data;
 using Security.DTO;
@@ -11,14 +12,14 @@ namespace LaboratorioAws.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AuthDbContext _authDbContext;
+        private readonly UserRepository _userRepository;
         private readonly TokenService _tokenService;
         public AuthController(
-            AuthDbContext authDbContext, 
+            UserRepository userRepository,
             TokenService tokenService
         )
         {
-            _authDbContext = authDbContext;
+            _userRepository = userRepository;
             _tokenService = tokenService;
         }
 
@@ -26,8 +27,8 @@ namespace LaboratorioAws.Controllers
         {
             Id = 1,
             UserName = "Test",
-            Email = "user@test.com",
-            Name = "Test McTester"
+            Email = "user@test.com"
+            //Name = "Test McTester"
         };
 
         [HttpGet]
@@ -36,7 +37,7 @@ namespace LaboratorioAws.Controllers
             var response = new LoginResponseDto
             {
                 Token = await _tokenService.GenerateToken(user),
-                Username = user.UserName
+                Email = user.Email
             };
 
             return Ok(response);
@@ -45,7 +46,43 @@ namespace LaboratorioAws.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDto registerDto)
         {
-            //var user = await _authDbContext.Users
+            var user = await _userRepository.GetUserByEmail(registerDto.Email);
+
+            if (user != null) return BadRequest("User with this email already exists!");
+
+            var newUser = RegisterService.RegisterUser(
+                registerDto.Email, 
+                registerDto.Username, 
+                registerDto.Password
+            );
+
+            if (newUser == null) return BadRequest("Error while registering the user");
+
+            await _userRepository.AddUser(newUser);
+            await _userRepository.SaveChangesAsync();
+
+            return Ok("User was registered successfully!");
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginDto loginDto)
+        {
+            var user = await _userRepository.GetUserByUsername(loginDto.Username);
+
+            if (user == null) return BadRequest("Username does not exist!");
+
+            if (!LoginService.LoginUser(user, loginDto.Password))
+            {
+                return Unauthorized("Invalid password");
+            }
+
+            var response = new LoginResponseDto
+            {
+                Email = user.Email,
+                Token = await _tokenService.GenerateToken(user)
+            };
+
+            return Ok(response);
         }
     }
 }
