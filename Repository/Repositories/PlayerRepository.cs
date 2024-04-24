@@ -15,5 +15,10 @@ namespace Repository.Repositories
         {
             return await _dbSet.FirstOrDefaultAsync(x => x.Number == playerNumber);
         }
+
+        public async Task<IEnumerable<Player>> GetPlayersByClub(int clubId)
+        {
+            return await _dbSet.Where(x => x.ClubId == clubId).ToListAsync();
+        }
     }
 }

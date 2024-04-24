@@ -1,8 +1,10 @@
 //using LaboratorioAws.Data;
+using LaboratorioAws.Services;
 using Microsoft.EntityFrameworkCore;
 using Model.Interfaces;
 using Repository.Data;
 using Repository.Repositories;
+using Security.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+
+builder.Services.AddDbContext<AuthDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection"));
+});
+
+// Token service
+builder.Services.AddScoped<TokenService>();
 
 // Unit Of Work pattern
 //builder.Services.AddScoped< UnitOfWork>();

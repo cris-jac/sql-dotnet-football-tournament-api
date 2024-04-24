@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Model.Entities
 {
@@ -10,6 +11,7 @@ namespace Model.Entities
         public bool Starter { get; set; }
         [ForeignKey(nameof(Club))]
         public int ClubId { get; set; }
+        [JsonIgnore]
         public virtual Club Club { get; set; }
     }
 }

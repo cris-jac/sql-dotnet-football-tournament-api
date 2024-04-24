@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository.Data;
 
@@ -10,9 +11,10 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240423205326_AddedStandings")]
+    partial class AddedStandings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.29");
@@ -847,7 +849,8 @@ namespace Repository.Migrations
 
                     b.HasIndex("ClubId");
 
-                    b.HasIndex("TournamentId");
+                    b.HasIndex("TournamentId")
+                        .IsUnique();
 
                     b.ToTable("Standings");
                 });
@@ -872,14 +875,14 @@ namespace Repository.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("WinnerId")
+                    b.Property<int>("WinnerId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("WinnerId");
 
-                    b.ToTable("Tournaments");
+                    b.ToTable("Tournament");
                 });
 
             modelBuilder.Entity("Model.Entities.Club", b =>
@@ -965,8 +968,8 @@ namespace Repository.Migrations
                         .IsRequired();
 
                     b.HasOne("Model.Entities.Tournament", "Tournament")
-                        .WithMany("Standings")
-                        .HasForeignKey("TournamentId")
+                        .WithOne("Standing")
+                        .HasForeignKey("Model.Entities.Standing", "TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -979,7 +982,9 @@ namespace Repository.Migrations
                 {
                     b.HasOne("Model.Entities.Club", "Winner")
                         .WithMany()
-                        .HasForeignKey("WinnerId");
+                        .HasForeignKey("WinnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Winner");
                 });
@@ -998,7 +1003,8 @@ namespace Repository.Migrations
                 {
                     b.Navigation("Participants");
 
-                    b.Navigation("Standings");
+                    b.Navigation("Standing")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

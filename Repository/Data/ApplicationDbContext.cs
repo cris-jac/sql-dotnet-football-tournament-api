@@ -12,6 +12,9 @@ namespace Repository.Data
         public DbSet<Player> Players { get; set; }
         public DbSet<Club> Club { get; set; }
         public DbSet<Stadium> Stadium { get; set; }
+        public DbSet<Match> Matches { get; set; }
+        public DbSet<Standing> Standings { get; set; }
+        public DbSet<Tournament> Tournaments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

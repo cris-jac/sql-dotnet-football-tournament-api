@@ -29,12 +29,13 @@ namespace Repository.Repositories
             _dbSet.Update(entity);
         }
 
-        public async Task<List<T>> GetAll()
+        // Marked as virtual -> To enable modifications
+        public virtual async Task<List<T>> GetAll()
         {
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<T?> GetId(int id)
+        public virtual async Task<T?> GetId(int id)
         {
             return await _dbSet.FindAsync(id);
         }

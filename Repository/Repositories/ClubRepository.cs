@@ -1,4 +1,5 @@
-﻿using Model.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Model.Entities;
 using Model.Interfaces;
 using Repository.Data;
 using System;
@@ -14,6 +15,17 @@ namespace Repository.Repositories
 
         public ClubRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
+        }
+
+        // Added override to include the players
+        public override async Task<List<Club>> GetAll()
+        {
+            return await _dbSet.Include(x => x.Players).ToListAsync();
+        }
+
+        public override async Task<Club?> GetId(int id)
+        {
+            return await _dbSet.Include(x => x.Players).FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

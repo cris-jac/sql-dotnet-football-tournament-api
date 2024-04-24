@@ -7,8 +7,8 @@
         public string Organizer { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public List<Club> Participants { get; set; }
-        public Club Winner { get; set; }
-        public Standing Standing { get; set; }
+        public List<Club> Participants { get; set; } = new List<Club>();
+        public Club? Winner { get; set; }
+        public List<Standing> Standings { get; set; } = new List<Standing>();
     }
 }
