@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model.Entities;
+using Model.Interfaces;
 using Repository.Data;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class StandingRepository : Repository<Standing>
+    public class StandingRepository : Repository<Standing>, IStandingRepository
     {
         public StandingRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
@@ -34,6 +35,11 @@ namespace Repository.Repositories
         public override async Task<Standing?> GetId(int id)
         {
             return await _dbSet.Include(x => x.Tournament).Include(x => x.Club).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

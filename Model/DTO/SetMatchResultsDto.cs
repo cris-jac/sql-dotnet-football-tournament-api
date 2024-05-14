@@ -1,4 +1,4 @@
-﻿namespace LaboratorioAws.DTO
+﻿namespace Model.DTO
 {
     public class SetMatchResultsDto
     {

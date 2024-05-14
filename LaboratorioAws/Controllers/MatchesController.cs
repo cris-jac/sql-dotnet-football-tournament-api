@@ -1,7 +1,9 @@
 ﻿using LaboratorioAws.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Model.DTO;
 using Model.Entities;
+using Model.Services;
 using Repository.Repositories;
 
 namespace LaboratorioAws.Controllers
@@ -11,10 +13,15 @@ namespace LaboratorioAws.Controllers
     public class MatchesController : ControllerBase
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly StandingService _standingService;
 
-        public MatchesController(UnitOfWork unitOfWork)
+        public MatchesController(
+            UnitOfWork unitOfWork,
+            StandingService standingService
+        )
         {
             _unitOfWork = unitOfWork;
+            _standingService = standingService;
         }
 
         [HttpGet("error-test")]
@@ -32,14 +39,16 @@ namespace LaboratorioAws.Controllers
 
             foreach (var match in matches)
             {
-                var m = new MatchResponseDto
-                {
-                    Id = match.Id,
-                    Club1 = match.Club1.Name,
-                    Club2 = match.Club2.Name,
-                    ScoreClub1 = match.ScoreClub1,
-                    ScoreClub2 = match.ScoreClub2
-                };
+                //var m = new MatchResponseDto
+                //{
+                //    Id = match.Id,
+                //    Club1 = match.Club1.Name,
+                //    Club2 = match.Club2.Name,
+                //    ScoreClub1 = match.ScoreClub1,
+                //    ScoreClub2 = match.ScoreClub2
+                //};
+
+                var m = new MatchResponseDto(match);
 
                 matchesResponse.Add(m);
             }
@@ -107,94 +116,15 @@ namespace LaboratorioAws.Controllers
             _unitOfWork.Matches.Edit(existingMatch);
             await _unitOfWork.SaveAsync();
 
+            // --- Refactored from here ---
             // Get teams standings for Club1
-            var club1Std = await _unitOfWork.Standings.GetStandingByClubId(existingMatch.Club1Id);
-            // If not create standing
-            if (club1Std == null)
-            {
-                Standing c1Standing = new Standing
-                {
-                    ClubId = existingMatch.Club1Id,
-                    TournamentId = existingMatch.TournamentId
-                };
+            var standingClub1 = await _standingService.InsertAndGetStandingByClubId(existingMatch.Club1Id, existingMatch.TournamentId);
 
-                await _unitOfWork.Standings.Add(c1Standing);
-                await _unitOfWork.SaveAsync();
+            // Get teams standings for Club2
+            var standingClub2 = await _standingService.InsertAndGetStandingByClubId(existingMatch.Club2Id, existingMatch.TournamentId);
 
-                club1Std = await _unitOfWork.Standings.GetStandingByClubId(existingMatch.Club1Id);
-            }
-
-            // Get stadning for Club 2
-            var club2Std = await _unitOfWork.Standings.GetStandingByClubId(existingMatch.Club2Id);
-            // If not -> create standing
-            if (club2Std == null)
-            {
-                Standing c2Standing = new Standing
-                {
-                    ClubId = existingMatch.Club2Id,
-                    TournamentId = existingMatch.TournamentId
-                };
-
-                await _unitOfWork.Standings.Add(c2Standing);
-                await _unitOfWork.SaveAsync();
-
-                club2Std = await _unitOfWork.Standings.GetStandingByClubId(existingMatch.Club2Id);
-            }
-
-            // Independent of result standing data
-            // Team 1
-            //club1Std.MatchIds.Add(existingMatch.Id);
-            if (club1Std.Matches == null)
-            {
-                club1Std.Matches = new List<Match>();
-            }
-            club1Std.Matches.Add(existingMatch);
-            club1Std.GoalsFor += resultsDto.ScoreClub1;
-            club1Std.GoalsAgainst += resultsDto.ScoreClub2;
-            club1Std.PlayedMatches += 1;
-
-            // Team 2
-            //club2Std.MatchIds.Add(existingMatch.Id);
-            if (club2Std.Matches == null)
-            {
-                club2Std.Matches = new List<Match>();
-            }
-            club2Std.Matches.Add(existingMatch);
-            club2Std.GoalsFor += resultsDto.ScoreClub2;
-            club2Std.GoalsAgainst += resultsDto.ScoreClub1;
-            club2Std.PlayedMatches += 1;
-
-            // Dependent of the result standing data
-            if (resultsDto.ScoreClub1 > resultsDto.ScoreClub2)
-            {
-                club1Std.Wins += 1;
-                club1Std.Points += 3;
-                existingMatch.Winner = existingMatch.Club1;                 // Make club a winner
-
-                club2Std.Losses += 1;
-            }
-            else if (resultsDto.ScoreClub2 > resultsDto.ScoreClub1)
-            {
-                club2Std.Wins += 1;
-                club2Std.Points += 3;
-                existingMatch.Winner = existingMatch.Club2;                 // Make club a winner
-
-                club1Std.Losses += 1;
-            }
-            else
-            {
-                club1Std.Draws += 1;
-                club1Std.Points += 1;
-
-                club2Std.Draws += 1;
-                club2Std.Points += 1;
-            }
-
-            // Save standings
-            _unitOfWork.Matches.Edit(existingMatch);
-            _unitOfWork.Standings.Edit(club1Std);
-            _unitOfWork.Standings.Edit(club2Std);
-            await _unitOfWork.SaveAsync();
+            // Set Standing and matches
+            await _standingService.SetResultInStandings(existingMatch, standingClub1, standingClub2, resultsDto);
 
             return NoContent();
         }

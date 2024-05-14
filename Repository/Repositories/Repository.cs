@@ -6,7 +6,7 @@ namespace Repository.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _dbContext;
+        protected readonly ApplicationDbContext _dbContext;
         internal DbSet<T> _dbSet { get; set; }
         public Repository(ApplicationDbContext dbContext)
         {
@@ -32,6 +32,7 @@ namespace Repository.Repositories
         // Marked as virtual -> To enable modifications
         public virtual async Task<List<T>> GetAll()
         {
+            //return await _dbSet.ToListAsync();
             return await _dbSet.ToListAsync();
         }
 
@@ -40,6 +41,11 @@ namespace Repository.Repositories
             return await _dbSet.FindAsync(id);
         }
 
+        //
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
 
     }
 }

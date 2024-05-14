@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Model.Interfaces;
+using Model.Services;
 using Repository.Data;
 using Repository.Repositories;
 using Security;
@@ -61,6 +62,12 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection"));
 });
+
+
+// ---- Standing Service ----
+builder.Services.AddScoped<StandingService>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IStandingRepository, StandingRepository>();
 
 // Token service
 builder.Services.AddScoped<TokenService>();

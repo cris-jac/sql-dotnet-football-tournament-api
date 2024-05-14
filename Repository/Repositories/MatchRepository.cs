@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model.Entities;
+using Model.Interfaces;
 using Repository.Data;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class MatchRepository : Repository<Match>
+    public class MatchRepository : Repository<Match>, IMatchRepository
     {
         public MatchRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
@@ -25,5 +26,11 @@ namespace Repository.Repositories
         {
             return await _dbSet.Include(x => x.Tournament).Include(x => x.Club1).Include(x => x.Club2).Include(x => x.Stadium).Include(x => x.Winner).FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }
