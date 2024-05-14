@@ -17,6 +17,12 @@ namespace LaboratorioAws.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [HttpGet("error-test")]
+        public IActionResult GetError()
+        {
+            throw new Exception();
+        }
+
         [HttpGet]
         public async Task<ActionResult> GetMatches()
         {
